@@ -1,0 +1,36 @@
+services:
+  vote:
+    build: ./vote
+    ports:
+      - "8080:8080"
+    restart: always
+    networks:
+      - frontend
+    depends_on:
+      - redis
+  
+  redis:
+    image: redis:7.2.3-alpine
+    networks:
+      - frontend
+      - backend
+    restart: always
+    volumes:
+      - redisdata:/data
+
+  postgre:
+    image: postgres:16.0-alpine
+    networks:
+      - frontend
+      - backend
+    restart: always
+    volumes:
+      - postgresdata:/var/lib/postgresql/data
+
+volumes:
+  redisdata:
+  postgresdata:
+networks:
+  frontend:
+  backend:
+
