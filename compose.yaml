@@ -58,7 +58,7 @@ services:
 volumes:
   redisdata:
   postgresdata:
+
 networks:
   frontend:
   backend:
-
