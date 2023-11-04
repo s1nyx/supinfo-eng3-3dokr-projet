@@ -19,6 +19,9 @@ services:
     restart: always
     networks:
       - backend
+    depends_on:
+      - postgres
+      - redis
 
   redis:
     image: redis:7.2.3-alpine
@@ -47,7 +50,7 @@ services:
     volumes:
       - postgresdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready"]
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "postgres"]
       interval: 1m
       timeout: 10s
       retries: 3
