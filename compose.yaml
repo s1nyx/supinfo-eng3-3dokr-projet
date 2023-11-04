@@ -8,6 +8,11 @@ services:
       - frontend
     depends_on:
       - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
   
   worker:
     build: ./worker
@@ -23,8 +28,13 @@ services:
     restart: always
     volumes:
       - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
 
-  postgre:
+  postgres:
     image: postgres:16.0-alpine
     networks:
       - frontend
@@ -36,6 +46,11 @@ services:
       - POSTGRES_DB=postgres
     volumes:
       - postgresdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
 
 volumes:
   redisdata:
