@@ -1,6 +1,6 @@
 # 3DOKR - Mini Projet
 
-Auteurs : Anthony PRYS, Killian VINCENT
+Auteurs : Anthony PRUYS, Killian VINCENT
 
 Objectif : Conteneurisé une application web pour voter entre 2 options et afficher le résultat du vote.
 
