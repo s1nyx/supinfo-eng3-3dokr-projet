@@ -13,6 +13,21 @@ services:
       interval: 1m
       timeout: 10s
       retries: 3
+
+  result:
+    build: ./result
+    ports:
+     - "8081:8888"
+    restart: always
+    networks:
+     - frontend
+    depends_on:
+      - postgres
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
   
   worker:
     build: ./worker
