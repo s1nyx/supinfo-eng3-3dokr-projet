@@ -16,6 +16,14 @@ Ces outils sont nécessaires pour construire et exécuter les conteneurs défini
 - `redis` : une base de données clé-valeur pour la mise en cache temporaire des votes.
 - `postgres` : une base de données relationnelle pour le stockage persistant des votes.
 
+## Cloner le projet
+
+Premièrement, vous devez récupérer le projet en utilisant git grâce à la commande suivante :
+
+```sh
+git clone git@github.com:s1nyx/supinfo-eng3-3dokr-projet.git
+```
+
 ## Démarrage des Services
 
 Pour démarrer l'ensemble des services, exécutez la commande suivante à la racine de votre projet :
