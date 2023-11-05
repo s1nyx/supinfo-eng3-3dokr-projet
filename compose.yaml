@@ -23,11 +23,6 @@ services:
      - frontend
     depends_on:
       - postgres
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
   
   worker:
     build: ./worker
@@ -37,6 +32,11 @@ services:
     depends_on:
       - postgres
       - redis
+    healthcheck:
+      test: ["CMD", "ping", "-c", "1", "localhost"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
 
   redis:
     image: redis:7.2.3-alpine
