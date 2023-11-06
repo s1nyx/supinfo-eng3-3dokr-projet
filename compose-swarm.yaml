@@ -1,44 +1,51 @@
 services:
   vote:
-    build: ./vote
+    image: supinfoant/3dokrproject:vote
     ports:
       - "8080:8080"
-    restart: always
     networks:
       - frontend
     depends_on:
       - redis
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080"]
       interval: 1m
       timeout: 10s
       retries: 3
     deploy:
       mode: replicated
       replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 60s
       
 
   result:
-    build: ./result
+    image: supinfoant/3dokrproject:result
     ports:
      - "8081:8888"
-    restart: always
     networks:
      - frontend
     depends_on:
       - postgres
     healthcheck:
-      test: ["cmd", "curl", "-f", "http://localhost:8081"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8888"]
       interval: 1m
       timeout: 10s
       retries: 3
     deploy:
       mode: replicated
       replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 60s
   
   worker:
-    build: ./worker
-    restart: always
+    image: supinfoant/3dokrproject:worker
     networks:
       - backend
     depends_on:
@@ -52,13 +59,17 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 60s
 
   redis:
     image: redis:7.2.3-alpine
     networks:
       - frontend
       - backend
-    restart: always
     volumes:
       - redisdata:/data
     healthcheck:
@@ -69,13 +80,17 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 60s
 
   postgres:
     image: postgres:16.0-alpine
     networks:
       - frontend
       - backend
-    restart: always
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -90,6 +105,11 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 60s
 
 volumes:
   redisdata:

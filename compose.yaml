@@ -9,8 +9,8 @@ services:
     depends_on:
       - redis
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080"]
-      interval: 1m
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080"]
+      interval: 30s
       timeout: 10s
       retries: 3
 
@@ -23,6 +23,11 @@ services:
      - frontend
     depends_on:
       - postgres
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8888"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
   
   worker:
     build: ./worker
@@ -34,7 +39,7 @@ services:
       - redis
     healthcheck:
       test: ["CMD", "ping", "-c", "1", "localhost"]
-      interval: 1m
+      interval: 30s
       timeout: 10s
       retries: 3
 
@@ -48,7 +53,7 @@ services:
       - redisdata:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 1m
+      interval: 30s
       timeout: 10s
       retries: 3
 
@@ -66,7 +71,7 @@ services:
       - postgresdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres", "-d", "postgres"]
-      interval: 1m
+      interval: 30s
       timeout: 10s
       retries: 3
 
