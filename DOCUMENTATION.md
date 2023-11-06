@@ -54,7 +54,9 @@ docker compose ps
 
 ## Accès aux services
 
-Une fois les services démarrés, l'application vote sera accessible via http://localhost:8080
+Une fois les services démarrés, l'application vote sera accessible via http://localhost:8080 pour le module vote et http://localhost:8081 pour le module result.
+
+Vous pouvez y accéder depuis une machine externe en remplaçant "localhost" par l'adresse IP de la machine ayant lancé les conteneurs.
 
 ## Arrêt des Services
 
