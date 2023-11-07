@@ -72,6 +72,28 @@ Vous pouvez y accéder depuis une machine externe en remplaçant "localhost" par
 docker compose down
 ```
 
+## Déploiment avec un cluster Docker Swarm
+
+### Créations des VM
+
+Vous pouvez utilisez la méthode que vous souhaitez, tant que les VMs sont sur le même réseau et peuvent communiquer entre elles.
+
+Pour notre configuration, nous avons utilisez VMWare. Une première VM à été créée avec Debian 11, 20 Go de stockage et 2 Go de RAM. Cette machine correspond au manager.
+
+L'installation de docker et des autres ressources nécessaires pour l'utilisez ont été installés sur cette machine, puis elle a été clonée 2 fois pour créer les VM worker.
+
+Chaque VM est sur le réseau NAT de VMWare et peuvent ainsi communiquer entre elles, et la machine hôte peut communiquer avec ces dernières (l'hôte a aussi une adresse IP sur ce réseau).
+
+Les adresses IP sont attributés automatiquement en ordre croissant via DHCP. Il suffit juste de lancer la commande `ip a` pour la récupérer.
+
+
+### Mise en place du cluster
+
+On lance sur le manager la commande `docker swarm init --advertise-addr <adresse IP manager>` et on récupère le token.
+
+Puis on rajoute les noeuds worker avec la commande `docker swarm join --token <token manager> <adresse IP manager>:2377`
+
+Il ne reste plus qu'à lancer le stack.
 
 ## Modifications dans le code
 
