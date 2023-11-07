@@ -1,3 +1,5 @@
+version: '3.9'
+
 services:
   vote:
     image: supinfoant/3dokrproject:vote
@@ -14,12 +16,15 @@ services:
       retries: 3
     deploy:
       mode: replicated
-      replicas: 1
+      replicas: 2
       restart_policy:
         condition: on-failure
         delay: 10s
         max_attempts: 3
         window: 60s
+      placement:
+        constraints:
+          - node.role == worker
       
 
   result:
@@ -37,12 +42,15 @@ services:
       retries: 3
     deploy:
       mode: replicated
-      replicas: 1
+      replicas: 2
       restart_policy:
         condition: on-failure
         delay: 10s
         max_attempts: 3
         window: 60s
+      placement:
+        constraints:
+          - node.role == worker
   
   worker:
     image: supinfoant/3dokrproject:worker
@@ -51,11 +59,6 @@ services:
     depends_on:
       - postgres
       - redis
-    healthcheck:
-      test: ["CMD", "ping", "-c", "1", "localhost"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
     deploy:
       mode: replicated
       replicas: 1
@@ -85,6 +88,9 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
+      placement:
+        constraints:
+          - node.role == manager
 
   postgres:
     image: postgres:16.0-alpine
@@ -110,6 +116,9 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
+      placement:
+        constraints:
+          - node.role == manager
 
 volumes:
   redisdata:
