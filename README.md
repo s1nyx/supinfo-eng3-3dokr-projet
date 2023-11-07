@@ -2,7 +2,7 @@
 
 Auteurs : Anthony PRUYS, Killian VINCENT
 
-Objectif : Conteneurisé une application web pour voter entre 2 options et afficher le résultat du vote.
+Objectif : Conteneuriser une application web pour voter entre 2 options et afficher le résultat du vote.
 
 ## Utilisation
 
