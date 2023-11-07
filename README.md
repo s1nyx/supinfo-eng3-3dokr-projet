@@ -87,13 +87,86 @@ Chaque VM est sur le réseau NAT de VMWare et peuvent ainsi communiquer entre el
 Les adresses IP sont attributés automatiquement en ordre croissant via DHCP. Il suffit juste de lancer la commande `ip a` pour la récupérer.
 
 
+Pensez à changer les hostnames de chaque machine (dans le fichier /etc/hostname et /etc/hosts) pour pouvoir les différencier sur le manager.
+
 ### Mise en place du cluster
 
-On lance sur le manager la commande `docker swarm init --advertise-addr <adresse IP manager>` et on récupère le token.
+On lance sur le manager la commande 
+```sh
+docker swarm init --advertise-addr <adresse IP manager>
+``` 
 
-Puis on rajoute les noeuds worker avec la commande `docker swarm join --token <token manager> <adresse IP manager>:2377`
+ex:
+```sh
+docker swarm init --advertise-addr 192.168.99.128
+```
+
+Dans le résultat, copiez la commande afficher. Elle nous permettra de rajouter les noeuds workers au cluster.
+
+Sur les noeuds worker, lancez la commande copiée.
+
+```sh
+docker swarm join --token <token manager> <adresse IP manager>:2377
+```
+
+ex:
+```sh
+docker swarm join --token \
+SWMTKN-1-06v5wj8agvqv0u2qc3i24wiwszgfq9ktr8xlzo87r6pc9b91am-8n7w48r076h7qz73e1m1rlf5k \
+192.168.99.128:2377
+```
+
+Une fois que tous les noeuds sont rajoutez, utilisez la commande :
+```sh
+docker node ls
+```
+résultat (ID généré aléatoirement):
+```
+ID                            HOSTNAME   STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+5kmwqq4hmc0q78um6rithyouf *   master1    Ready     Active         Leader           24.0.6
+xu6kydrbqvjkgkt10nkbu6y5j     worker     Ready     Active                          24.0.6
+z9uh4xwjso6ang309f9b3eb7o     worker2    Ready     Active                          24.0.6
+```
 
 Il ne reste plus qu'à lancer le stack.
+
+### Déploiment du stack
+
+Cloner le projet git sur le manager :
+
+```sh
+git clone git@github.com:s1nyx/supinfo-eng3-3dokr-projet.git
+```
+
+Puis allez dans le dossier racine du projet et lancez la commande suivante :
+
+```sh
+docker stack deploy --compose-file compose-swarm.yaml dokrproject
+```
+
+Si le cluster est correctement déployés, vous devriez voir le statut de chaque services avec la commande suivante :
+
+```sh
+docker service ls
+```
+
+```
+ID             NAME                   MODE         REPLICAS               IMAGE                            PORTS
+uhnue2c4t9ab   dokrproject_postgres   replicated   1/1                    postgres:16.0-alpine
+5w08f1rrpeaw   dokrproject_redis      replicated   1/1                    redis:7.2.3-alpine
+h8fowce1r2ks   dokrproject_result     replicated   2/2 (max 1 per node)   supinfoant/3dokrproject:result   *:8081->8888/tcp
+nasdofl5wz4g   dokrproject_vote       replicated   2/2 (max 1 per node)   supinfoant/3dokrproject:vote     *:8080->8080/tcp
+q4ozhbz1l4ef   dokrproject_worker     replicated   1/1                    supinfoant/3dokrproject:worker
+```
+
+Les services peuvent prendre un peu de temps avant d'avoir lancé tout les conteneurs, donc le nombre de réplicas peut être différent pendant le lancement.
+
+Une fois que tout les services sont prêt, vous pourrez accéder aux pages web en utilisant l'adresse IP d'un des noeuds (peu importes lequel) et le port associé :
+`http://<ip>:8080` pour voter et `http://<ip>:8081` pour le résultat.
+
+ex: `http://192.168.99.128:8080` ou `http://192.168.99.129:8080` pour votez et `http://192.168.99.128:8081` ou `http://192.168.99.129:8081` pour le résultat.
+
+Si un des workers quitte le cluster, le site web restera toujours accessible sur les adresses IP des noeuds toujours présent dans le cluster.
 
 ## Modifications dans le code
 

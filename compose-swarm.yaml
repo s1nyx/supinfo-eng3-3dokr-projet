@@ -23,6 +23,7 @@ services:
         max_attempts: 3
         window: 60s
       placement:
+        max_replicas_per_node: 1
         constraints:
           - node.role == worker
       
@@ -49,6 +50,7 @@ services:
         max_attempts: 3
         window: 60s
       placement:
+        max_replicas_per_node: 1
         constraints:
           - node.role == worker
   
