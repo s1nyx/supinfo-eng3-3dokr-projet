@@ -1,3 +1,5 @@
+version: '3.9'
+
 services:
   vote:
     build: ./vote
@@ -15,7 +17,9 @@ services:
       retries: 3
 
   result:
-    build: ./result
+    build:
+      context: ./result
+      target: prod
     ports:
      - "8081:8888"
     restart: always
