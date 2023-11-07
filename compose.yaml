@@ -7,7 +7,7 @@ services:
       - "8080:8080"
     restart: always
     networks:
-      - frontend
+      - frontendvote
     depends_on:
       - redis
     healthcheck:
@@ -24,7 +24,7 @@ services:
      - "8081:8888"
     restart: always
     networks:
-     - frontend
+     - frontendresult
     depends_on:
       - postgres
     healthcheck:
@@ -45,7 +45,7 @@ services:
   redis:
     image: redis:7.2.3-alpine
     networks:
-      - frontend
+      - frontendvote
       - backend
     restart: always
     volumes:
@@ -59,7 +59,7 @@ services:
   postgres:
     image: postgres:16.0-alpine
     networks:
-      - frontend
+      - frontendresult
       - backend
     restart: always
     environment:
@@ -79,5 +79,6 @@ volumes:
   postgresdata:
 
 networks:
-  frontend:
+  frontendvote:
+  frontendresult:
   backend:

@@ -6,7 +6,7 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - frontend
+      - frontendvote
     depends_on:
       - redis
     healthcheck:
@@ -32,7 +32,7 @@ services:
     ports:
      - "8081:8888"
     networks:
-     - frontend
+     - frontendresult
     depends_on:
       - postgres
     healthcheck:
@@ -71,7 +71,7 @@ services:
   redis:
     image: redis:7.2.3-alpine
     networks:
-      - frontend
+      - frontendvote
       - backend
     volumes:
       - redisdata:/data
@@ -95,7 +95,7 @@ services:
   postgres:
     image: postgres:16.0-alpine
     networks:
-      - frontend
+      - frontendresult
       - backend
     environment:
       - POSTGRES_USER=postgres
@@ -125,5 +125,6 @@ volumes:
   postgresdata:
 
 networks:
-  frontend:
+  frontendvote:
+  frontendresult:
   backend:
