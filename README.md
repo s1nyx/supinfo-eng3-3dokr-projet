@@ -76,16 +76,15 @@ docker compose down
 
 ### Créations des VM
 
-Vous pouvez utilisez la méthode que vous souhaitez, tant que les VMs sont sur le même réseau et peuvent communiquer entre elles.
+Vous pouvez utiliser la méthode que vous souhaitez, tant que les VMs sont sur le même réseau et peuvent communiquer entre elles.
 
-Pour notre configuration, nous avons utilisez VMWare. Une première VM à été créée avec Debian 11, 20 Go de stockage et 2 Go de RAM. Cette machine correspond au manager.
+Pour notre configuration, nous avons utilisé VMWare. Une première VM a été créée avec Debian 11, 20 Go de stockage et 2 Go de RAM. Cette machine correspond au manager.
 
-L'installation de docker et des autres ressources nécessaires pour l'utilisez ont été installés sur cette machine, puis elle a été clonée 2 fois pour créer les VM worker.
+L'installation de docker et des autres ressources nécessaires pour l'utiliser ont été installés sur cette machine, puis elle a été clonée 2 fois pour créer les VM worker.
 
 Chaque VM est sur le réseau NAT de VMWare et peuvent ainsi communiquer entre elles, et la machine hôte peut communiquer avec ces dernières (l'hôte a aussi une adresse IP sur ce réseau).
 
-Les adresses IP sont attributés automatiquement en ordre croissant via DHCP. Il suffit juste de lancer la commande `ip a` pour la récupérer.
-
+Les adresses IP sont attribuées automatiquement en ordre croissant via DHCP. Il suffit juste de lancer la commande `ip a` pour la récupérer.
 
 Pensez à changer les hostnames de chaque machine (dans le fichier /etc/hostname et /etc/hosts) pour pouvoir les différencier sur le manager.
 
@@ -101,7 +100,7 @@ ex:
 docker swarm init --advertise-addr 192.168.99.128
 ```
 
-Dans le résultat, copiez la commande afficher. Elle nous permettra de rajouter les noeuds workers au cluster.
+Dans le résultat, copiez la commande affichée. Elle nous permettra de rajouter les noeuds workers au cluster.
 
 Sur les noeuds worker, lancez la commande copiée.
 
@@ -138,13 +137,13 @@ Cloner le projet git sur le manager :
 git clone git@github.com:s1nyx/supinfo-eng3-3dokr-projet.git
 ```
 
-Puis allez dans le dossier racine du projet et lancez la commande suivante :
+Puis aller dans le dossier racine du projet et lancer la commande suivante :
 
 ```sh
 docker stack deploy --compose-file compose-swarm.yaml dokrproject
 ```
 
-Si le cluster est correctement déployés, vous devriez voir le statut de chaque services avec la commande suivante :
+Si le cluster est correctement déployé, vous pourrez voir le statut de chaque service avec la commande suivante :
 
 ```sh
 docker service ls
@@ -159,14 +158,14 @@ nasdofl5wz4g   dokrproject_vote       replicated   2/2 (max 1 per node)   supinf
 q4ozhbz1l4ef   dokrproject_worker     replicated   1/1                    supinfoant/3dokrproject:worker
 ```
 
-Les services peuvent prendre un peu de temps avant d'avoir lancé tout les conteneurs, donc le nombre de réplicas peut être différent pendant le lancement.
+Les services peuvent prendre un peu de temps avant d'avoir lancé tous les conteneurs, donc le nombre pour les "replicas" peut être différent pendant le lancement.
 
-Une fois que tout les services sont prêt, vous pourrez accéder aux pages web en utilisant l'adresse IP d'un des noeuds (peu importes lequel) et le port associé :
+Une fois que tous les services sont prêts, vous pourrez accéder aux pages web en utilisant l'adresse IP d'un des noeuds (peu importe lequel) et le port associé :
 `http://<ip>:8080` pour voter et `http://<ip>:8081` pour le résultat.
 
 ex: `http://192.168.99.128:8080` ou `http://192.168.99.129:8080` pour votez et `http://192.168.99.128:8081` ou `http://192.168.99.129:8081` pour le résultat.
 
-Si un des workers quitte le cluster, le site web restera toujours accessible sur les adresses IP des noeuds toujours présent dans le cluster.
+Si un des workers quitte le cluster, le site web restera toujours accessible sur les adresses IP des noeuds toujours présents dans le cluster.
 
 ## Modifications dans le code
 
